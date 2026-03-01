@@ -23,6 +23,6 @@ Operational optimization based on conventional linear programming (LP) assumes f
 **3. Computational Bottleneck**  
 Uncertainty quantification of a fixed system design requires repeatedly solving large-scale second-stage optimization problems, leading to significant computational burden and limited scalability.
 
----
-
 MasCOR addresses these limitations through a co-optimization framework combining a scenario-generative machine learning model and an RL agent trained on optimal trajectories.
+
+---
