@@ -4,52 +4,28 @@ We present **MasCOR**, a machine-learning-assisted co-optimization framework tha
 ---
 ## 1. Motivation
 
-Renewable-powered fuel systems (e.g., power-to-methanol) require tight coordination between:
-
-- **System design** (ESS sizing, production capacity)
+E-fuel systems (e.g., power-to-methanol) require joint optimization of:
+- **System design** (ESS sizing, production capacity)  
 - **Operational strategy** (hourly dispatch under renewable variability)
-
-In practice, systems integrate battery storage (BESS), hydrogen storage (CHT), and grid backup to stabilize intermittent renewable supply. These design choices directly affect both **production cost** and **carbon emissions**.
-
-Therefore, system design and operation must be **co-optimized under region-specific renewable uncertainty**.
+Design choices such as battery storage, hydrogen storage, and grid backup strongly affect both **cost** and **carbon emissions**.  
+Thus, design and operation must be co-optimized under region-specific renewable uncertainty.
 
 ---
 
 ## Limitations of Existing Approaches
 
-Despite extensive research in stochastic co-optimization, three key limitations remain:
+Current stochastic co-optimization methods face three core limitations:
 
-### 1. Simplified Renewable Uncertainty Modeling
+### 1. Oversimplified Renewable Uncertainty  
+Most models rely on empirical or probabilistic distributions, ignoring temporal correlations and realistic renewable patterns.
 
-Most approaches approximate renewable variability using empirical or probabilistic distributions. These methods:
+### 2. Deterministic Second-Stage Operation  
+Operational optimization assumes full-horizon information, limiting applicability to real-time decision-making.
 
-- Ignore temporal correlations  
-- Fail to capture realistic multi-day renewable patterns  
-- Do not generalize well across regions  
-
-### 2. Deterministic Second-Stage Operation
-
-Co-optimization is typically formulated as:
-
-- Stage 1: design decisions  
-- Stage 2: hourly operational optimization  
-
-However, the second stage assumes full-horizon information and solves a deterministic optimization problem. This limits applicability to real-time operation where future renewable generation is unknown.
-
-### 3. Poor Scalability
-
-Uncertainty quantification requires repeatedly solving large-scale operational optimization problems, leading to:
-
-- High computational cost  
-- Slow design-space exploration  
-- Limited scalability  
+### 3. Computational Bottleneck  
+Uncertainty quantification requires repeatedly solving large-scale optimization problems, leading to poor scalability.
 
 ---
 
-These limitations motivate a new framework that can:
-
-- Learn realistic renewable temporal dynamics  
-- Replace repeated deterministic second-stage solving  
-- Enable fast and scalable co-optimization  
-
+MasCOR addresses these limitations with a learning-based co-optimization framework.
 **MasCOR is designed to address these challenges.**
