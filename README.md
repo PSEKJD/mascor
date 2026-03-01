@@ -26,3 +26,8 @@ Uncertainty quantification of a fixed system design requires repeatedly solving 
 MasCOR addresses these limitations through a co-optimization framework combining a scenario-generative machine learning model and an RL agent trained on optimal trajectories.
 
 ---
+## 2. Methodology
+<a name="MasCOR-framework"></a>
+<p align="center">
+<img src="images/MasCOR-overview.png" alt="drawing" width="500"/>
+</p>
