@@ -10,8 +10,6 @@ E-fuel systems (e.g., power-to-methanol) require joint optimization of:
 Design choices such as battery storage, hydrogen storage, and grid backup strongly affect both **cost** and **carbon emissions**.  
 Thus, design and operation must be co-optimized under region-specific renewable uncertainty.
 
----
-
 ## Limitations of Existing Approaches
 
 Current stochastic co-optimization methods face three core limitations:
