@@ -7,22 +7,21 @@ We present **MasCOR**, a machine-learning-assisted co-optimization framework tha
 E-fuel systems (e.g., power-to-methanol) require joint optimization of:
 - **System design** (ESS sizing, production capacity)  
 - **Operational strategy** (hourly dispatch under renewable variability)
-Design choices such as battery storage, hydrogen storage, and grid backup strongly affect both **cost** and **carbon emissions**.  
-Thus, design and operation must be co-optimized under region-specific renewable uncertainty.
 
-## Limitations of Existing Approaches
+Under region-specific renewable temporal patterns, design choices such as battery storage, hydrogen storage, and grid backup directly impact both **cost** and **carbon emissions**. Thus, design and operation must be co-optimized under region-specific renewable uncertainty.
+
+### Limitations of Existing Approaches
 
 Current stochastic co-optimization methods face three core limitations:
 
-### 1. Oversimplified Renewable Uncertainty  
+**1. Oversimplified Renewable Uncertainty**  
 Most models rely on empirical or probabilistic distributions, ignoring temporal correlations and realistic renewable patterns.
 
-### 2. Deterministic Second-Stage Operation  
+**2. Deterministic Second-Stage Operation**  
 Operational optimization assumes full-horizon information, limiting applicability to real-time decision-making.
 
-### 3. Computational Bottleneck  
+**3. Computational Bottleneck**  
 Uncertainty quantification requires repeatedly solving large-scale optimization problems, leading to poor scalability.
-
 ---
 
 MasCOR addresses these limitations with a learning-based co-optimization framework.
