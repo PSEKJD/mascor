@@ -28,5 +28,5 @@ MasCOR addresses these limitations through a co-optimization framework combining
 ---
 ## 2. Methodology
 <p align="center">
-  <img src="./images/MasCOR-overview.png" width="500">
+  <img src="./images/MasCOR-overview.png">
 </p>
