@@ -15,14 +15,14 @@ Under region-specific renewable temporal patterns, design choices such as batter
 Current stochastic co-optimization methods face three core limitations:
 
 **1. Oversimplified Renewable Uncertainty**  
-Most models rely on empirical or probabilistic distributions, ignoring temporal correlations and realistic renewable patterns.
+Most models rely on empirical or probabilistic distributions, ignoring temporal correlations and realistic renewable patterns of target sites.
 
 **2. Deterministic Second-Stage Operation**  
-Operational optimization assumes full-horizon information, limiting applicability to real-time decision-making.
+Operational optimization based on conventional linear programming (LP) assumes full-horizon information, limiting its applicability to real-time decision-making. Although second-stage recourse can be solved over a scenario set, the resulting global LP solution cannot provide adaptive, sequential operational guidance for hourly decisions of real-time system operation.
 
 **3. Computational Bottleneck**  
-Uncertainty quantification requires repeatedly solving large-scale optimization problems, leading to poor scalability.
+Uncertainty quantification of a fixed system design requires repeatedly solving large-scale second-stage optimization problems, leading to significant computational burden and limited scalability.
+
 ---
 
-MasCOR addresses these limitations with a learning-based co-optimization framework.
-**MasCOR is designed to address these challenges.**
+MasCOR addresses these limitations through a co-optimization framework combining a scenario-generative machine learning model and an RL agent trained on optimal trajectories.
