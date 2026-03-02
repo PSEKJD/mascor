@@ -100,9 +100,15 @@ Please obtain a Gurobi license and place the license file (`gurobi.lic`) in the 
   - `gan-evaluation/` : Validation and evaluation of GAN-generated renewable scenarios.  
   - `optimization/` : Execution scripts for co-optimization, uncertainty quantification, and real-time operation.
 
-### Example results
+## Example results
+### GAN Validation and Benchmarking of MasCOR for Fast and Robust Dynamic Planning
 <p align="center">
   <img src="./images/performance.png" width="800">
+</p>
+
+### Co-optimization (target region: Skive in Denmark) & validation under real-time operation
+<p align="center">
+  <img src="./images/Co-op-validation.png" width="800">
 </p>
 
 
