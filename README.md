@@ -101,5 +101,8 @@ Please obtain a Gurobi license and place the license file (`gurobi.lic`) in the 
   - `optimization/` : Execution scripts for co-optimization, uncertainty quantification, and real-time operation.
 
 ### Example results
+<p align="center">
+  <img src="./images/performance.png" width="800">
+</p>
 
 
