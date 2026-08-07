@@ -11,7 +11,6 @@ import threading
 import torch
 import numpy as np
 
-# 수정! revision은 Python module/package가 아니라 일반 directory이므로 file 경로를 직접 등록
 _CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.abspath(os.path.join(_CURRENT_DIR, "..", ".."))
 if _CURRENT_DIR not in sys.path:
@@ -19,7 +18,7 @@ if _CURRENT_DIR not in sys.path:
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-# 수정! 같은 directory의 mpec.py를 직접 import
+
 from mpec import PlantConfig, build_model, model_size
 from typing import Dict, List, Optional, Sequence, Tuple
 import pyomo.environ as pyo
@@ -117,12 +116,12 @@ def solve_model(
     threads: Optional[int] = None,
     numeric_focus: int = 1,
     warmstart: bool = False,
-    log_file: Optional[str] = None,  # 수정! solve별 Gurobi 로그 저장 경로
+    log_file: Optional[str] = None,  
 ):
     solver = pyo.SolverFactory(solver_name)
     if not solver.available(exception_flag=False):
         raise RuntimeError(f"Gurobi solver interface '{solver_name}' unavailable.")
-    options: Dict[str, float | int | str] = {  # 수정! LogFile 문자열 허용
+    options: Dict[str, float | int | str] = {  
        "NonConvex": 2,
         "NumericFocus": 1,
         "Presolve": 2,
@@ -133,7 +132,7 @@ def solve_model(
 
     if threads is not None:
         options["Threads"] = int(threads)
-    if log_file is not None:  # 수정! terminal 출력과 별도로 Gurobi .log 저장
+    if log_file is not None:  
         os.makedirs(os.path.dirname(os.path.abspath(log_file)), exist_ok=True)
         options["LogFile"] = os.path.abspath(log_file)
     print(
@@ -217,7 +216,7 @@ def set_lcox_objective(m: pyo.ConcreteModel) -> None:
     #m.co2_epsilon_constraint.activate()
     m.objective.set_value(m.annualized_total_cost / 1.0e7)
 
-def set_co2_objective(m: pyo.ConcreteModel) -> None:  # 수정! epsilon anchor용 CO2 objective
+def set_co2_objective(m: pyo.ConcreteModel) -> None:  
     m.co2_epsilon_constraint.deactivate()
     m.objective.set_value(m.expected_CO2 / 1.0e4)
 
@@ -292,7 +291,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
     model_build_time += time.perf_counter() - build_t0
     model_build_count += 1
 
-    # 수정! args 조합으로 내부 결과 directory 생성
     result_dir = os.path.join(
         "revision",
         "mpec_solver_simple",
@@ -315,7 +313,7 @@ def mpec_function(device: str, num: int, netG, dataset, args):
         solver_name="gurobi_direct",
         threads=args.workers,
         warmstart=False,
-        log_file=lcox_anchor_log_path,  # 수정! anchor Gurobi log 저장
+        log_file=lcox_anchor_log_path,  
     )
     lcox_anchor_solve_s = time.perf_counter() - solve_t0
     solve_time += lcox_anchor_solve_s
@@ -328,7 +326,7 @@ def mpec_function(device: str, num: int, netG, dataset, args):
     lcox_anchor.update({
         "termination": str(r1.solver.termination_condition),
         "solve_wall_s": lcox_anchor_solve_s,
-        "gurobi_log_path": lcox_anchor_log_path,  # 수정!
+        "gurobi_log_path": lcox_anchor_log_path, 
     })
 
     with open(lcox_anchor_path, "wb") as f:
@@ -341,7 +339,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
         flush=True,
     )
 
-    # 수정! epsilon mode에서는 epsilon grid 생성을 위해 CO2 anchor를 먼저 계산
     co2_anchor = None
     co2_anchor_solve_s = None
 
@@ -355,7 +352,7 @@ def mpec_function(device: str, num: int, netG, dataset, args):
             solver_name="gurobi_direct",
             threads=args.workers,
             warmstart=False,
-            log_file=co2_anchor_log_path,  # 수정! anchor Gurobi log 저장
+            log_file=co2_anchor_log_path,  
         )
         co2_anchor_solve_s = time.perf_counter() - solve_t0
         solve_time += co2_anchor_solve_s
@@ -368,7 +365,7 @@ def mpec_function(device: str, num: int, netG, dataset, args):
         co2_anchor.update({
             "termination": str(r2.solver.termination_condition),
             "solve_wall_s": co2_anchor_solve_s,
-            "gurobi_log_path": co2_anchor_log_path,  # 수정!
+            "gurobi_log_path": co2_anchor_log_path,  
         })
 
         with open(co2_anchor_path, "wb") as f:
@@ -381,7 +378,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
             flush=True,
         )
 
-    # 수정! --mode에 따라 epsilon constraint 또는 weighted objective grid 선택
     if args.mode == "epsilon":
         pareto_grid = np.linspace(
             co2_anchor["expected_CO2_tonne_per_year"],
@@ -397,7 +393,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
         )
         grid_key = "alpha"
 
-    # 수정! --pareto-idx는 1부터 시작하며, 해당 point 하나만 실행
     if args.pareto_idx is not None:
         if not 1 <= args.pareto_idx <= args.pareto_num:
             raise ValueError(
@@ -431,7 +426,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
                 f"BLENDED OBJECTIVE (alpha={float(grid_value):.6f})"
             )
 
-        # 수정! mode별 point 파일을 분리하여 서로 덮어쓰지 않도록 저장
         pareto_path = os.path.join(
             result_dir,
             f"pareto_{point_no}_{args.mode}.pkl",
@@ -441,7 +435,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
             f"pareto_{point_no}_{args.mode}_gurobi.log",
         )
 
-        # 수정! --pareto-idx 단독 실행은 반드시 warm-start=False
         point_warmstart = args.pareto_idx is None
 
         solve_t0 = time.perf_counter()
@@ -455,7 +448,7 @@ def mpec_function(device: str, num: int, netG, dataset, args):
             solver_name="gurobi_direct",
             threads=args.workers,
             warmstart=point_warmstart,
-            log_file=pareto_log_path,  # 수정! point별 Gurobi log 저장
+            log_file=pareto_log_path,  
         )
         point_solve_s = time.perf_counter() - solve_t0
 
@@ -492,7 +485,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
         records.append(row)
         pareto_solve_times.append(point_solve_s)
 
-        # 수정! 전체 결과 하나가 아니라 Pareto point별 pkl을 즉시 저장
         pareto_save = {
             "objective_mode": args.mode,
             "scenario_num": args.num,
@@ -515,8 +507,6 @@ def mpec_function(device: str, num: int, netG, dataset, args):
             flush=True,
         )
 
-    # 수정! blend mode도 별도 CO2 anchor와 Gurobi log를 저장하되,
-    # 기존 blended Pareto warm-start 흐름을 바꾸지 않도록 Pareto solve 후 계산
     if args.mode == "blend":
         set_co2_objective(model)
         solve_t0 = time.perf_counter()
@@ -569,7 +559,7 @@ def mpec_function(device: str, num: int, netG, dataset, args):
             else 0.0
         ),
         "total_model_build_s": model_build_time,
-        "model_build_s": model_build_time,  # 수정! runner brief_result와 key 이름 연결
+        "model_build_s": model_build_time,  
         "model_build_count": model_build_count,
 
         "avg_solve_s": (
@@ -604,12 +594,12 @@ def main():
         "--framework",
         choices=["mpec", "mascor"],
         default="mpec",
-    )  # 수정! runner 이전 버전과도 호환되도록 optional 유지
+    ) 
     ap.add_argument(
         "--device",
         choices=["cpu", "gpu"],
         default="cpu",
-    )  # 수정! runner에서 생략해도 기존 계산은 cpu로 실행
+    )  
     ap.add_argument("--num", type=int, default=10, required=True)
     ap.add_argument(
         "--workers", "--worker",
@@ -617,14 +607,14 @@ def main():
         type=int,
         default=16,
         required=True,
-    )  # 수정! --workers와 --worker 모두 허용
+    ) 
     ap.add_argument(
         "--pareto_num", "--pareto-num",
         dest="pareto_num",
         type=int,
         default=16,
         required=True,
-    )  # 수정! underscore/hyphen 모두 허용
+    )  
     ap.add_argument(
         "--mode",
         choices=["epsilon", "blend"],
@@ -642,7 +632,7 @@ def main():
         dest="target_country",
         type=str,
         default="France",
-    )  # 수정! runner의 --country와 기존 --target-country 모두 허용
+    )  
     ap.add_argument("--region", type=str, default="Dunkirk")
     args = ap.parse_args()
     

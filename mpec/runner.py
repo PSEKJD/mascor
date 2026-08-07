@@ -13,7 +13,7 @@ def log(msg):
 
 
 def _parse_worker_json(stdout):
-    # 수정! worker stdout에 부가 문장이 있어도 마지막 정상 JSON object를 탐색
+    
     lines = [ln.strip() for ln in (stdout or "").splitlines() if ln.strip()]
     for line in reversed(lines):
         try:
@@ -26,7 +26,7 @@ def _parse_worker_json(stdout):
 
 
 def run_cmd(env, pyfile="worker.py", args=None):
-    # 수정! 다른 package의 worker가 호출되지 않도록 runner와 같은 directory의 worker.py를 직접 실행
+    
     worker_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         pyfile,
@@ -40,12 +40,11 @@ def run_cmd(env, pyfile="worker.py", args=None):
         stdout=subprocess.PIPE,
         stderr=None,
         text=True,
-        check=False,  # 수정! return code를 먼저 확인한 후 JSON parsing
+        check=False,  
     )
     t1 = time.perf_counter()
     stdout = (p.stdout or "").strip()
 
-    # 수정! worker 실패 시 stdout을 JSON으로 읽지 않고 즉시 error payload 반환
     if p.returncode != 0:
         return {
             "error": "subprocess_failed",
@@ -133,7 +132,7 @@ def main(
             "--heartbeat-s", str(heartbeat_s),
             "--country", country,
             "--region", region,
-        ]  # 수정! 현재 worker의 canonical 인자만 전달
+        ]
 
         if pareto_idx is not None:
             args += ["--pareto-idx", str(pareto_idx)]
@@ -171,7 +170,7 @@ def main(
         f"pareto_{pareto_num}_"
         f"{idx_label}.pkl"
     )
-    os.makedirs(os.path.dirname(out_file), exist_ok=True)  # 수정! summary directory 보장
+    os.makedirs(os.path.dirname(out_file), exist_ok=True)   
     with open(out_file, "wb") as f:
         pickle.dump(results, f)
     log(f"✅ Saved runner summary: {out_file}")
@@ -195,7 +194,7 @@ if __name__ == "__main__":
         type=int,
         default=None,
         help="Gurobi thread number",
-    )  # 수정! --workers와 --worker 모두 허용
+    )  
     ap.add_argument(
         "--pareto_num", "--pareto-num",
         dest="pareto_num",
@@ -222,7 +221,7 @@ if __name__ == "__main__":
         dest="country",
         type=str,
         default="France",
-    )  # 수정! 양쪽 이름 모두 허용
+    )  
     ap.add_argument(
         "--region",
         type=str,
